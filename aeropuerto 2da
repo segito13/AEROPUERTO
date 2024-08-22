@@ -1,0 +1,375 @@
+CREATE DATABASE aeropuerto;
+use aeropuerto
+
+create table Airport
+(
+	id_airport int IDENTITY(1,1)  PRIMARY key,
+	name VARCHAR(50) not null
+);
+
+INSERT INTO airport (NAME)
+VALUES      ('JFK International Airport'),
+            ('Los Angeles International Airport'),
+            ('Heathrow Airport'),
+            ('Charles de Gaulle Airport'),
+            ('Tokyo Narita Airport'),
+            ('Dubai International Airport'),
+            ('Frankfurt Airport'),
+            ('Sydney Kingsford Smith Airport'),
+            ('Sao Paulo Guarulhos International Airport'),
+            ('Changi Airport'); 
+
+create table Plane_Model
+(
+	id_plane_model int IDENTITY(1,1) PRIMARY KEY,
+	description VARCHAR(256),
+	graphic VARCHAR(256)
+)
+
+INSERT INTO Plane_Model (description, graphic) 
+VALUES 
+('Boeing 737', 'boeing420'),
+('Airbus A320', 'airbus20'),
+('Boeing 747', 'boeing'),
+('Airbus A380', 'airbus'),
+('Embraer E190', 'embraer'),
+('Bombardier CRJ700', 'crj700'),
+('Boeing 777', 'boeing777'),
+('Airbus A350', 'airbus'),
+('Cessna 208', 'cessna'),
+('ATR 72', 'atr');
+
+create table Flight_Number
+(
+	id_flight_number int IDENTITY(1,1)  PRIMARY key ,
+	id_airport_start int not null,
+	id_airport_goal int not null,
+	id_plane_model int not null,
+	deperture_time time not null,
+	description varchar(256),
+	type VARCHAR(50),
+	airline VARCHAR(100) not null,
+	foreign key (id_airport_start) REFERENCES Airport (id_airport),
+	foreign key (id_airport_goal) REFERENCES Airport (id_airport),
+	foreign key (id_plane_model) REFERENCES Plane_Model(id_plane_model)
+);
+
+INSERT INTO Flight_Number (id_airport_start, id_airport_goal, id_plane_model, deperture_time, description, type, airline)
+VALUES 
+(1, 2, 1, '08:30', 'Morning flight from JFK to LAX', 'Domestic', 'American Airlines'),
+(3, 4, 2, '14:45', 'Transatlantic flight from Heathrow to Charles de Gaulle', 'International', 'British Airways'),
+(5, 6, 3, '22:00', 'Overnight flight from Tokyo to Dubai', 'International', 'Emirates'),
+(7, 8, 4, '07:15', 'Morning flight from Frankfurt to Sydney', 'International', 'Lufthansa'),
+(9, 10, 5, '12:30', 'Flight from Sao Paulo to Singapore', 'International', 'Singapore Airlines'),
+(1, 3, 6, '09:45', 'Flight from JFK to Heathrow', 'International', 'Delta Airlines'),
+(4, 5, 7, '16:00', 'Flight from Paris to Tokyo', 'International', 'Air France'),
+(6, 7, 8, '11:20', 'Flight from Dubai to Frankfurt', 'International', 'Emirates'),
+(8, 9, 9, '18:30', 'Flight from Sydney to Sao Paulo', 'International', 'Qantas'),
+(2, 10, 10, '05:45', 'Flight from Los Angeles to Singapore', 'International', 'Singapore Airlines');
+
+create table Airplane(
+	id_airplane int IDENTITY(1,1)  PRIMARY key ,
+	id_plane_model int not null,
+	registration_numbre integer not null,
+	begin_operacion date, 
+	status varchar(50),
+	foreign key (id_plane_model) REFERENCES Plane_Model(id_plane_model)
+);
+
+INSERT INTO Airplane (id_plane_model, registration_numbre, begin_operacion, status) 
+VALUES 
+(1, 12345, '2015-01-01', 'Active'),
+(2, 23456, '2016-05-10', 'Active'),
+(3, 34567, '2014-03-15', 'In Maintenance'),
+(4, 45678, '2017-08-23', 'Active'),
+(5, 56789, '2018-12-01', 'Retired'),
+(6, 67890, '2013-11-21', 'Active'),
+(7, 78901, '2019-04-14', 'Active'),
+(8, 89012, '2020-07-30', 'Active'),
+(9, 90123, '2021-02-11', 'Active'),
+(10, 10134, '2022-06-19', 'Active');
+
+create table seat
+(
+	id_seat int IDENTITY(1,1) primary key ,
+	id_plane_model int not null,
+	size int not null,
+	location char(50) not NULL
+	foreign key (id_plane_model) REFERENCES Plane_Model(id_plane_model)
+);
+INSERT INTO Seat (id_plane_model, size, location)
+VALUES 
+(1, 18, 'Window A'),
+(1, 18, 'Window B'),
+(2, 18, 'Aisle C'),
+(2, 18, 'Aisle D'),
+(3, 20, 'Window A'),
+(3, 20, 'Aisle B'),
+(4, 22, 'Window C'),
+(4, 22, 'Aisle D'),
+(5, 18, 'Window A'),
+(6, 18, 'Window B');
+
+create table Flight
+(
+	id_flight int IDENTITY(1,1)  primary key ,
+	id_flight_category int,
+	boarding_time TIME not null,
+	flight_date date not null,
+	gate VARCHAR(50) null,
+	check_in_counter varchar(256) not null,
+	foreign key (id_flight_category) REFERENCES flight_category(id_category)
+);
+INSERT INTO Flight (id_flight_category, boarding_time, flight_date, gate, check_in_counter)
+VALUES 
+(1, '07:30', '2024-08-15', 'A12', 'Counter 5'),
+(2, '13:45', '2024-09-10', 'B3', 'Counter 2'),
+(3, '09:00', '2024-08-20', 'C1', 'Counter 10'),
+(1, '19:00', '2024-10-01', 'D8', 'Counter 7'),
+(2, '06:15', '2024-09-25', 'E5', 'Counter 4'),
+(3, '17:45', '2024-11-02', 'F2', 'Counter 12'),
+(1, '08:30', '2024-08-22', 'G6', 'Counter 9'),
+(2, '12:50', '2024-09-15', 'H7', 'Counter 11'),
+(3, '10:10', '2024-10-12', 'I3', 'Counter 3'),
+(1, '23:30', '2024-12-05', 'J2', 'Counter 1');
+
+create table Frequent_Flyer_card
+(
+	id_ffc int IDENTITY(1,1)  primary key,
+	ffc_numbre integer not null,
+	miles integer not null,
+	meal_code varchar(50) 
+);
+INSERT INTO Frequent_Flyer_card (ffc_numbre, miles, meal_code)
+VALUES 
+(1001, 50000, 'Vegetarian'),
+(1002, 10000, 'Vegan'),
+(1003, 75000, 'Standard'),
+(1004, 30000, 'Kosher'),
+(1005, 200000, 'Halal'),
+(1006, 5000, 'Vegetarian'),
+(1007, 120000, 'Vegan'),
+(1008, 40000, 'Standard'),
+(1009, 100000, 'Kosher'),
+(1010, 150000, 'Halal');
+
+create table Customer
+(
+	id_customer int IDENTITY(1,1)  primary key,
+	id_ffc int not null,
+	date_bith date not null,
+	id_document int not null,
+	name varchar(256) not null,
+	foreign key (id_ffc) REFERENCES Frequent_Flyer_card(id_ffc),
+	foreign key (id_document) REFERENCES document(id_document)
+);
+INSERT INTO Customer (id_ffc, date_bith, id_document, name)
+VALUES 
+(1, '1980-02-15', 1, 'John Doe'),
+(2, '1995-07-30', 2, 'Jane Smith'),
+(3, '1985-06-22', 3, 'Michael Johnson'),
+(4, '1970-01-12', 4, 'Emily Davis'),
+(5, '2000-09-10', 5, 'Daniel Garcia'),
+(6, '1988-12-01', 6, 'Sarah Williams'),
+(7, '1992-05-14', 7, 'David Wilson'),
+(8, '1983-11-25', 8, 'James Brown'),
+(9, '1997-03-20', 9, 'Christopher Martinez'),
+(10, '1990-10-05', 10, 'Patricia Rodriguez');
+
+create table ticket
+(
+	id_ticket int IDENTITY(1,1)  PRIMARY KEY,
+	id_customer int not null,
+	ticketing_code varchar(256) not null,
+	number integer not null,
+	foreign key (id_customer) REFERENCES Customer(id_customer)
+);
+
+INSERT INTO ticket (id_customer, ticketing_code, number)
+VALUES 
+(1, 'TKT12345', 10001),
+(2, 'TKT23456', 10002),
+(3, 'TKT34567', 10003),
+(4, 'TKT45678', 10004),
+(5, 'TKT56789', 10005),
+(6, 'TKT67890', 10006),
+(7, 'TKT78901', 10007),
+(8, 'TKT89012', 10008),
+(9, 'TKT90123', 10009),
+(10, 'TKT10134', 10010);
+
+create table 	Coupon
+(
+	id_coupon int IDENTITY(1,1)  PRIMARY key,
+	id_ticket int not null,
+	id_available_seat int,
+	id_flight int not NULL,
+	date_redemtion date not null,
+	class varchar(50) not null,
+	stanby char not null,
+	meal_code varchar(50),
+	foreign key (id_ticket) REFERENCES ticket(id_ticket),
+	foreign key (id_flight) REFERENCES flight(id_flight),
+	foreign key (id_available_seat) REFERENCES Available_Seat(id_available_seat)
+);
+INSERT INTO Coupon (id_ticket, id_available_seat, id_flight, date_redemtion, class, stanby, meal_code)
+VALUES 
+(1, 1, 1, '2024-08-14', 'Economy', 'N', 'Vegetarian'),
+(2, 2, 1, '2024-08-14', 'Economy', 'N', 'Vegan'),
+(3, 3, 2, '2024-09-09', 'Business', 'Y', 'Standard'),
+(4, 4, 2, '2024-09-09', 'Economy', 'N', 'Kosher'),
+(5, 5, 3, '2024-08-19', 'First Class', 'Y', 'Halal'),
+(6, 6, 3, '2024-08-19', 'Economy', 'N', 'Standard'),
+(7, 7, 4, '2024-09-30', 'Business', 'N', 'Vegetarian'),
+(8, 8, 4, '2024-09-30', 'Economy', 'N', 'Vegan'),
+(9, 9, 5, '2024-09-24', 'First Class', 'Y', 'Kosher'),
+(10, 10, 5, '2024-09-24', 'Economy', 'N', 'Halal');
+
+create table Available_Seat
+(
+	id_available_seat int IDENTITY(1,1)  primary key,
+	id_seat int not null,
+	id_flight int not null,
+	foreign key (id_flight) REFERENCES flight(id_flight),
+	foreign key (id_seat) REFERENCES Seat(id_seat),
+	
+);
+
+INSERT INTO Available_Seat (id_seat, id_flight)
+VALUES 
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 2),
+(5, 3),
+(6, 3),
+(7, 4),
+(8, 4),
+(9, 5),
+(10, 5);
+
+
+
+create table Pieces_Luggage
+(
+	id_pLuggage int IDENTITY(1,1)  primary key,
+	id_coupon int not null,
+	number integer not null,
+	wight decimal(12,2) not null,
+	foreign key (id_coupon) REFERENCES coupon(id_coupon)
+);
+
+INSERT INTO Pieces_Luggage (id_coupon, number, wight)
+VALUES 
+(1, 2, 25.5),
+(2, 1, 15.3),
+(3, 3, 40.0),
+(4, 1, 12.8),
+(5, 2, 28.0),
+(6, 1, 18.6),
+(7, 2, 22.3),
+(8, 1, 16.9),
+(9, 3, 35.7),
+(10, 2, 26.4);
+
+create table pais(
+	id_pais int IDENTITY(1,1) primary key,
+	nombre varchar(50) not null
+);
+INSERT INTO pais (nombre)
+VALUES 
+('United States'),
+('United Kingdom'),
+('France'),
+('Japan'),
+('United Arab Emirates'),
+('Germany'),
+('Australia'),
+('Brazil'),
+('Singapore');
+
+create table ciudad(
+	id_ciudad int IDENTITY(1,1) primary key,
+	id_pais integer not null,
+	nombre varchar(50) not null,
+	foreign key (id_pais) REFERENCES pais(id_pais)
+);
+INSERT INTO ciudad (id_pais, nombre)
+VALUES 
+(1, 'New York'),
+(2, 'Los Angeles'),
+(3, 'London'),
+(4, 'Paris'),
+(5, 'Tokyo'),
+(6, 'Dubai'),
+(7, 'Frankfurt'),
+(8, 'Sydney'),
+(9, 'Sao Paulo'),
+(10, 'Singapore');
+
+create table ciudad_aeropuerto(
+	id_ciudad int,
+	id_airport int,
+	primary key (id_ciudad, id_airport),
+	foreign key (id_ciudad) REFERENCES ciudad(id_ciudad),
+	foreign key (id_airport) REFERENCES Airport(id_airport)
+);
+INSERT INTO ciudad_aeropuerto (id_ciudad, id_airport)
+VALUES 
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10);
+
+
+create table document(
+	id_document int IDENTITY primary key,
+	descripcion varchar(50) not null
+);
+INSERT INTO document (descripcion)
+VALUES ('Documento de Identidad'),
+       ('Pasaporte'),
+       ('Licencia de Conducir'),
+       ('Pasaporte'),
+	   ('Documento de Identidad'),
+	   ('Pasaporte'),
+	   ('Pasaporte'),
+	   ('Documento de Identidad'),
+	   ('Licencia de Conducir'),
+       ('Documento de Identidad');
+
+create table flight_category(
+	id_category int IDENTITY(1,1)primary key,
+	descripcion varchar(50) not null
+);
+
+INSERT INTO flight_category (descripcion)
+VALUES 
+('Domestic Flight'),
+('International Flight'),
+('Charter Flight');
+
+////////
+
+SELECT * FROM document;
+
+INSERT INTO document (descripcion)
+VALUES ('Documento de Identidad'),
+       ('Pasaporte'),
+       ('Licencia de Conducir'),
+       ('Pasaporte'),
+	   ('Documento de Identidad'),
+	   ('Pasaporte'),
+	   ('Pasaporte'),
+	   ('Documento de Identidad'),
+	   ('Licencia de Conducir'),
+       ('Documento de Identidad');
+
+
+
